@@ -1,0 +1,216 @@
+# Service account with review binding so we can authenticate with k8s
+# https://www.vaultproject.io/docs/auth/kubernetes.html
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vault
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: role-tokenreview-binding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: vault
+  namespace: default
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vault
+  labels:
+    app: vault
+spec:
+  serviceName: vault
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      serviceAccountName: vault
+      terminationGracePeriodSeconds: 30
+      ##############
+      volumes:
+      - name: vault
+        configMap:
+          name: vault
+          defaultMode: 0744
+      - name: certs
+        secret:
+          secretName: vault-ca-certs
+          items:
+          - key: root.bundle
+            path: root.bundle.pem
+          - key: root.crt
+            path: root.crt
+          - key: imca.bundle
+            path: intermediate.bundle.pem
+      containers:
+      - name: vault-sidecar
+        image: "vault:1.2.2"
+        volumeMounts:
+        - name: vault
+          mountPath: /scripts
+        - name: certs
+          mountPath: /certs
+        command: ["/scripts/wrapper.sh"]
+        env:
+        - name: VAULT_DEV_ROOT_TOKEN_ID
+          value: root-token
+        # containers in same pod see each other by localhost
+        - name: VAULT_ADDR
+          value: 'http://localhost:8200'
+      - name: vault
+        image: "vault:1.2.2"
+        command:
+        - vault
+        - server
+        - -dev
+        imagePullPolicy: IfNotPresent
+        args: ["server"]
+        securityContext:
+          capabilities:
+            add: ["IPC_LOCK"]
+        ports:
+        - containerPort: 8200
+          name: vault-port
+          protocol: TCP
+        - containerPort: 8201
+          name: cluster-port
+          protocol: TCP
+        env:
+        - name: VAULT_DEV_LISTEN_ADDRESS
+          value: "0.0.0.0:8200"
+        - name: VAULT_DEV_ROOT_TOKEN_ID
+          value: root-token
+        # Vault CANNOT HAVE readiness checks when running in dev mode
+        # as it cannot have multiple listeners
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault
+  labels:
+    app: vault
+spec:
+  selector:
+    app: vault
+  ports:
+  - name: http
+    port: 80
+    targetPort: vault-port
+    protocol: TCP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault
+data:
+  wrapper.sh: |
+    #!/bin/sh
+    set -e
+    apk add jq
+
+    # Wait until vault comes online
+    until vault status; do echo "Try again"; sleep 2; done
+    ##### PKI
+    export DOMAIN="local.not-valid.de"
+    export PUBLIC_VAULT_ADDRESS='https://vault.not-valid.de'
+    export ROOT_CA_TTL=175200h # 20 years
+    export INTERMEDIATE_CA_TTL=$ROOT_CA_TTL # needs to be <= ROOT_CA_TTL
+    export CERT_TTL=175199h # needs to be < INTERMEDIATE_CA_TTL
+    export INTERMEDIATE_CA_DOMAIN="default.svc.cluster.local"
+    export O="development"
+    export OU="mongo-cluster"
+    export ROLE_TTL="2190h" # 3 months
+
+    echo "** Login"
+    vault login $VAULT_DEV_ROOT_TOKEN_ID
+
+    echo "** Enable audit log"
+    vault audit enable file file_path=stdout
+
+    # read service account token mounted on volume
+    TOKEN=$(cat /run/secrets/kubernetes.io/serviceaccount/token)
+    CA_CERT=$(cat /var/run/secrets/kubernetes.io/serviceaccount/ca.crt)
+    NAMESPACE="default"
+
+    # Enable the Kubernetes auth method at the default path ("auth/kubernetes")
+    vault auth enable kubernetes
+
+    # Tell Vault how to communicate with the Kubernetes cluster
+    vault write auth/kubernetes/config \
+      token_reviewer_jwt="$TOKEN" \
+      kubernetes_host="https://kubernetes.default.svc.cluster.local" \
+      kubernetes_ca_cert="$CA_CERT"
+
+    mkdir -p dist
+
+    echo "** Setting up root CA"
+    # Enable pki/root backend - Only used for root CA
+    vault secrets enable -path=pki/root pki
+    # Set MAX ttl
+    vault secrets tune -max-lease-ttl=$ROOT_CA_TTL pki/root # 20 years
+
+    # Import root bundle
+    vault write pki/root/config/ca pem_bundle=@certs/root.bundle.pem
+
+    # Setting CRL location
+    echo "**** Setting up root CA CRL"
+    vault write pki/root/config/urls issuing_certificates="${PUBLIC_VAULT_ADDRESS}/v1/pki/root/ca" crl_distribution_points="${PUBLIC_VAULT_ADDRESS}/v1/pki/root/crl"
+
+    echo "** Setting up mongo pki"
+    # Generate environment intermediate CA
+    # all the certificates must be issued against pki/cluster as the base path
+    vault secrets enable -path=pki/cluster pki
+
+    # Set max ttl
+    vault secrets tune -max-lease-ttl=$INTERMEDIATE_CA_TTL pki/cluster
+
+    # Import intermediate CA
+    vault write pki/cluster/config/ca pem_bundle=@certs/intermediate.bundle.pem
+
+    # Set CRL for the intermediate CA
+    vault write pki/cluster/config/urls issuing_certificates="${PUBLIC_VAULT_ADDRESS}/v1/pki/cluster/ca" crl_distribution_points="${PUBLIC_VAULT_ADDRESS}/v1/pki/cluster/crl"
+
+    # create role associated with issuing certificates
+    # in Vault terminology a role is a logical name that
+    #  maps to a policy used to generate those credentials
+    vault write pki/cluster/roles/mongo \
+      allowed_domains="${INTERMEDIATE_CA_DOMAIN}" \
+      allow_subdomains=true \
+      organization=$O ou=$OU \
+      max_ttl=$INTERMEDIATE_CA_TTL
+
+    # create a new policy for issuing certs
+    tee mongo-policy.hcl <<EOF
+    path "pki/cluster/issue/*" {
+      capabilities = ["update"]
+    }
+    EOF
+
+    # write a new policy to vault, will tie it later to the service account
+    vault policy write mongo-policy mongo-policy.hcl
+
+    # Create a role named, 'mongo' to map Kubernetes Service Account to
+    # Vault policies and default token TTL
+    vault write auth/kubernetes/role/mongo \
+      bound_service_account_names=mongo \
+      bound_service_account_namespaces="$NAMESPACE" \
+      policies=mongo-policy \
+      ttl="$ROLE_TTL"
+
+    ##### Stay alive so the pod is healthy
+    echo "Finished"
+    tail -f /dev/null

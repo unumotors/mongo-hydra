@@ -1,0 +1,82 @@
+---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: mongo-hydra
+    spec:
+      strategy:
+        # All existing Pods are killed before new ones are created
+        type: Recreate
+      selector:
+        matchLabels:
+          name: mongo-hydra
+      replicas: 1
+      template:
+        metadata:
+          labels:
+            name: mongo-hydra
+        spec:
+          # We don't currently listen for sigterm so end quickly
+          terminationGracePeriodSeconds: 2
+          serviceAccountName: mongo
+          volumes:
+          - name: shared
+            emptyDir: {}
+          - name: config
+            configMap:
+              name: vault-agent-config
+              items:
+                - key: vault-agent-config.hcl
+                  path: vault-agent-config.hcl
+          - name: scripts
+            configMap:
+              name: cert-scripts
+              defaultMode: 0744
+          - name: vault-token
+            emptyDir:
+              medium: Memory
+          initContainers:
+          - name: mongo-hydra-vault-agent
+            image: "vault"
+            volumeMounts:
+            - name: config
+              mountPath: /etc/vault
+            - name: vault-token
+              mountPath: /home/vault
+            args:
+            - "agent"
+            - "-config=/etc/vault/vault-agent-config.hcl"
+            env:
+            - name: VAULT_ADDR
+              value: 'http://vault'
+          # since init containers run in order, when the previous exits
+          # the vault token will be created at /home/vault/.vault-token
+          - name: cert-generator
+            image: "vault"
+            volumeMounts:
+            - name: vault-token
+              mountPath: /home/vault
+            - name: shared
+              mountPath: /certs
+            - name: scripts
+              mountPath: /scripts
+            command: ["/scripts/wrapper.sh"]
+            env:
+            - name: VAULT_ADDR
+              value: 'http://vault'
+            - name: HOME
+              value: /home/vault
+            # since the allowed domain for the intermediate CA is default.svc.cluster.local
+            # all CNs need to be subdomains of that to be able to request certificates
+            - name: SUBJECT_COMMON_NAME
+              value: "mongo-hydra.default.svc.cluster.local"
+          containers:
+          - name: mongo-hydra
+            image: mongo-hydra:development
+            imagePullPolicy: Always
+            volumeMounts:
+            - name: shared
+              mountPath: /certs
+            env:
+            - name: LOGGING_LEVEL
+              value: debug

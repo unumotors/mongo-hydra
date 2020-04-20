@@ -1,0 +1,170 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: shard-1
+spec:
+  selector:
+    matchLabels:
+      # HAS to be equal to the service name
+      app: shard-1
+  serviceName: shard-1
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: shard-1
+    spec:
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: mongo
+      volumes:
+      - name: shared
+        emptyDir: {}
+      - name: config
+        configMap:
+          name: vault-agent-config
+          items:
+            - key: vault-agent-config.hcl
+              path: vault-agent-config.hcl
+      - name: scripts
+        configMap:
+          name: cert-scripts
+          defaultMode: 0744
+      - name: vault-token
+        emptyDir:
+          medium: Memory
+      initContainers:
+      - name: shard-1-vault-agent
+        image: "vault"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/vault
+        - name: vault-token
+          mountPath: /home/vault
+        args:
+        - "agent"
+        - "-config=/etc/vault/vault-agent-config.hcl"
+        env:
+        - name: VAULT_ADDR
+          value: 'http://vault'
+      # since init containers run in order, when the previous exits
+      # the vault token will be created at /home/vault/.vault-token
+      - name: cert-generator
+        image: "vault"
+        volumeMounts:
+        - name: vault-token
+          mountPath: /home/vault
+        - name: shared
+          mountPath: /certs
+        - name: scripts
+          mountPath: /scripts
+        command: ["/scripts/wrapper.sh"]
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: SERVICE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app']
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: VAULT_ADDR
+          value: 'http://vault'
+        - name: HOME
+          value: /home/vault
+        - name: SUBJECT_COMMON_NAME
+          value: "$(POD_NAME).$(SERVICE_NAME).$(POD_NAMESPACE).svc.cluster.local"
+      containers:
+      # Actual container
+      - name: shard-1
+        imagePullPolicy: Always
+        image: mongo:4.0
+        command:
+        - 'mongod'
+        - '--bind_ip'
+        - '0.0.0.0'
+        - '--replSet'
+        - 'shard-1'
+        - '--shardsvr'
+        - '--smallfiles'
+        - --auth
+        - --sslMode
+        - requireSSL
+        - --clusterAuthMode
+        - x509
+        - --sslPEMKeyFile
+        - /certs/mongo/mongodb.pem
+        - --sslCAFile
+        - /certs/ca/ca.crt
+        ports:
+        - containerPort: 27018
+        volumeMounts:
+        - name: shared
+          mountPath: /certs
+      - name: mongodb-exporter
+        env:
+        - name: MONGO_PORT
+          value: "27018"
+        # Pod name will be the CA
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: SERVICE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app']
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: SUBJECT_COMMON_NAME
+          value: "$(POD_NAME).$(SERVICE_NAME).$(POD_NAMESPACE).svc.cluster.local"
+        - name: MONGODB_URI
+          value: mongodb://CN=$(SUBJECT_COMMON_NAME),OU=mongo-cluster,O=development@localhost:$(MONGO_PORT)/?authMechanism=MONGODB-X509
+        image: quay.io/utilitywarehouse/mongodb_exporter:v0.6.3
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: shared
+          mountPath: /certs
+        ports:
+        - containerPort: 9216
+          protocol: TCP
+          name: metrics
+        command:
+        - /bin/sh
+        - -c
+        # This pod will crash until it is able to connect to mongodb://localhost
+        # Use sh to to run `/app/mongodb_exporter --test && /app/mongodb_exporter`
+        # to avoid a race condition where mongodb is not ready yet
+        # yamllint disable-line rule:line-length
+        - '/app/mongodb_exporter --test --mongodb.tls --mongodb.tls-cert "/certs/mongo/mongodb.pem" --mongodb.tls-ca "/certs/ca/ca.crt" --mongodb.tls-disable-hostname-validation && /app/mongodb_exporter --mongodb.tls --mongodb.tls-cert "/certs/mongo/mongodb.pem" --mongodb.tls-ca "/certs/ca/ca.crt" --mongodb.tls-disable-hostname-validation'
+---
+kind: Service
+apiVersion: v1
+metadata:
+  # HAS to be equal to the app: XXXX label
+  name: shard-1
+  labels:
+    app: shard-1
+    # Label for the ServiceMonitor to add
+    cluster: development
+spec:
+  selector:
+    app: shard-1
+  ports:
+  - port: 27018
+    targetPort: 27018
+    name: mongo
+  - port: 9216
+    targetPort: metrics
+    name: metrics
+  # Headless service
+  clusterIP: None
+  publishNotReadyAddresses: true

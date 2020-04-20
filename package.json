@@ -1,0 +1,34 @@
+{
+  "name": "mongo-hydra",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pelzerim/mongo-hydra.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pelzerim/mongo-hydra/issues"
+  },
+  "homepage": "https://github.com/pelzerim/mongo-hydra#readme",
+  "dependencies": {
+    "@dot-i/k8s-operator": "^1.0.1",
+    "@godaddy/terminus": "^4.3.1",
+    "js-yaml": "^3.13.1",
+    "lodash": "^4.17.15",
+    "mongodb": "^3.5.6",
+    "node-forge": "^0.9.1",
+    "node-yaml": "^4.0.1",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-unu": "^1.2.4"
+  }
+}

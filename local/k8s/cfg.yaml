@@ -1,0 +1,146 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cfg
+spec:
+  selector:
+    matchLabels:
+      app: cfg
+  serviceName: cfg
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: cfg
+    spec:
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: mongo
+      volumes:
+      - name: shared
+        emptyDir: {}
+      - name: config
+        configMap:
+          name: vault-agent-config
+          items:
+            - key: vault-agent-config.hcl
+              path: vault-agent-config.hcl
+      - name: scripts
+        configMap:
+          name: cert-scripts
+          defaultMode: 0744
+      - name: vault-token
+        emptyDir:
+          medium: Memory
+      initContainers:
+      - name: cfg-vault-agent
+        image: "vault"
+        volumeMounts:
+        - name: config
+          mountPath: /etc/vault
+        - name: vault-token
+          mountPath: /home/vault
+        args:
+        - "agent"
+        - "-config=/etc/vault/vault-agent-config.hcl"
+        env:
+        - name: VAULT_ADDR
+          value: 'http://vault'
+      # since init containers run in order, when the previous exits
+      # the vault token will be created at /home/vault/.vault-token
+      - name: cert-generator
+        image: "vault"
+        volumeMounts:
+        - name: vault-token
+          mountPath: /home/vault
+        - name: shared
+          mountPath: /certs
+        - name: scripts
+          mountPath: /scripts
+        command: ["/scripts/wrapper.sh"]
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: SERVICE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['app']
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: VAULT_ADDR
+          value: 'http://vault'
+        - name: HOME
+          value: /home/vault
+        - name: SUBJECT_COMMON_NAME
+          value: "$(POD_NAME).$(SERVICE_NAME).$(POD_NAMESPACE).svc.cluster.local"
+      containers:
+      # Actual container
+      - name: cfg
+        imagePullPolicy: Always
+        image: mongo:4.0
+        command:
+        - 'mongod'
+        - '--bind_ip'
+        - '0.0.0.0'
+        - '--replSet'
+        - 'cfg'
+        - '--configsvr'
+        - '--smallfiles'
+        - --auth
+        - --sslMode
+        - requireSSL
+        - --clusterAuthMode
+        - x509
+        - --sslPEMKeyFile
+        - /certs/mongo/mongodb.pem
+        - --sslCAFile
+        - /certs/ca/ca.crt
+        # Change from the default of /data/configdb to avoid confusion
+        - --dbpath
+        - "/data/db"
+        ports:
+        - containerPort: 27019
+        volumeMounts:
+        - name: shared
+          mountPath: /certs
+        env:
+        - name: MONGO_CONFIG_ENV_SSL_CA_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mongo-ca
+              key: ca.key
+        - name: MONGO_CONFIG_ENV_SSL_CA_CRT
+          valueFrom:
+            secretKeyRef:
+              name: mongo-ca
+              key: ca.crt
+---
+kind: Service
+apiVersion: v1
+metadata:
+  # HAS to be equal to the app: XXXX label
+  name: cfg
+  labels:
+    app: cfg
+    # Label for the ServiceMonitor to add
+    cluster: development
+spec:
+  selector:
+    app: cfg
+  ports:
+  - protocol: TCP
+    port: 27019
+    targetPort: 27019
+    name: mongo
+  - port: 9216
+    targetPort: metrics
+    name: metrics
+  # Headless service
+  clusterIP: None
+  publishNotReadyAddresses: true

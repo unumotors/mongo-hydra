@@ -1,0 +1,22 @@
+apiVersion: mongo-hydra.io/v1
+kind: MongoCluster
+metadata:
+  name: development
+spec:
+  mongos:
+    hostname: mongos-0.mongos.default.svc.cluster.local
+    port: 27017
+  configServer:
+    replicaSetName: cfg
+    port: 27019
+    hostnames:
+    - cfg-0.cfg.default.svc.cluster.local
+    - cfg-1.cfg.default.svc.cluster.local
+    - cfg-2.cfg.default.svc.cluster.local
+  shards:
+  - replicaSetName: shard-1
+    hostnames:
+    - shard-1-0.shard-1.default.svc.cluster.local
+    - shard-1-1.shard-1.default.svc.cluster.local
+    - shard-1-2.shard-1.default.svc.cluster.local
+    port: 27018

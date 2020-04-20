@@ -1,0 +1,73 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-agent-config
+data:
+  vault-agent-config.hcl: |
+    exit_after_auth = true
+    pid_file = "/home/vault/pidfile"
+
+    auto_auth {
+        method "kubernetes" {
+            mount_path = "auth/kubernetes"
+            config = {
+                role = "mongo"
+            }
+        }
+
+        sink "file" {
+            config = {
+                path = "/home/vault/.vault-token"
+            }
+        }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cert-scripts
+data:
+  wrapper.sh: |
+    #!/bin/sh -e
+    apk update
+    apk add jq
+
+    cd /certs
+    echo '### Requesting certificate ###'
+
+    CN=$SUBJECT_COMMON_NAME
+
+    echo '### generating offset to ttl ###'
+    REPLICA_NR=${POD_NAME: -1}
+    DEFAULT_TTL=${CERT_TTL:-2190} # default 3 months
+    TTL_OFFSET=$((REPLICA_NR*12)) # 12 hours offset between replicas ttl
+    TTL=$((DEFAULT_TTL+TTL_OFFSET))
+    TTL="${TTL}h"
+
+    echo "$TTL"
+    echo "### offsetted ttl by $TTL_OFFSET hours ###"
+
+    echo '### Generating certificate ###'
+
+    vault write -format=json pki/cluster/issue/mongo \
+      common_name="$CN" \
+      ttl=$TTL > cert.private.json
+
+    echo '### Generated certificate successfully ###'
+
+    echo '### Writing certificates to shared volume ###'
+
+    DIR_NAME=${CONFIG_SERVER_HOST:-mongo}
+    mkdir -p $DIR_NAME
+
+    jq -r '.data.private_key' cert.private.json > ${DIR_NAME}/mongodb.key
+    jq -r '.data.certificate' cert.private.json > ${DIR_NAME}/mongodb.crt
+    cat ${DIR_NAME}/mongodb.key ${DIR_NAME}/mongodb.crt > ${DIR_NAME}/mongodb.pem
+
+    mkdir -p ca
+    jq -r '.data.ca_chain[0]' cert.private.json > ca/ca-0.crt
+    jq -r '.data.ca_chain[1]' cert.private.json > ca/ca-1.crt
+    cat ca/ca-0.crt ca/ca-1.crt > ca/ca.crt
+
+    echo '### Wrote certificates to volume successfully ###'

@@ -1,0 +1,11 @@
+.idea
+.dockerignore
+.DS_Store
+.gitignore
+.git
+*.tap
+*.log
+build
+node_modules
+README.md
+examples
