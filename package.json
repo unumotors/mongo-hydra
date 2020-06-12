@@ -1,0 +1,32 @@
+{
+  "name": "mongo-hydra",
+  "version": "0.0.1",
+  "description": "A open source mongo orchestration tool with high hopes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"no tests yet\"",
+    "lint": "echo \"no linter yet\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/unumotors/mongo-hydra.git"
+  },
+  "bin": {
+    "mongo-hydra": "./cli.js"
+  },
+  "keywords": [
+    "mongo",
+    "mongodb",
+    "database",
+    "client",
+    "nodejs",
+    "operator",
+    "k8s"
+  ],
+  "author": "unu GmbH",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/unumotors/mongo-hydra/issues"
+  },
+  "homepage": "https://github.com/unumotors/mongo-hydra#readme"
+}
