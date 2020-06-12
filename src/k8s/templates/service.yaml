@@ -1,0 +1,24 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  # HAS to be equal to the app: XXXX label
+  name: cfg
+  labels:
+    app: cfg
+    # Label for the ServiceMonitor to add
+    cluster: production
+spec:
+  selector:
+    app: cfg
+  ports:
+  - protocol: TCP
+    port: 27019
+    targetPort: 27019
+    name: mongo
+  - port: 9216
+    targetPort: metrics
+    name: metrics
+  # Headless service
+  clusterIP: None
+  publishNotReadyAddresses: true

@@ -1,0 +1,11 @@
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: cfg
+spec:
+  # works with increasing replica set size
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      name: cfg
