@@ -16,14 +16,37 @@ Mongo-hydra is an attempt to open source all that learning in a proper reuseable
 
 ## Release Schedule
 
-|Version |  Component / Feature                | Github Milestone                   |
-|--------|-------------------------------------| -------------------------------------------------------------- |
-|`v0.0.1`| Basic scaffolding + connection logic| [v0.0.1](https://github.com/unumotors/mongo-hydra/milestone/1) |
-|`v0.0.2`| Manage replication                  | [v0.0.2](https://github.com/unumotors/mongo-hydra/milestone/2) |
-|`v0.0.3`| Sharding                            | [v0.0.3](https://github.com/unumotors/mongo-hydra/milestone/3) |
-|`v0.0.4`| User and roles                      | [v0.0.4](https://github.com/unumotors/mongo-hydra/milestone/4) |
-|`v0.0.5`| Authentication                      | [v0.0.5](https://github.com/unumotors/mongo-hydra/milestone/5) |
-|`v0.0.6`| K8s Operator + CRDs                 | [v0.0.6](https://github.com/unumotors/mongo-hydra/milestone/6) |
+| Version  | Component / Feature                  | Github Milestone                                               |
+|----------|--------------------------------------|----------------------------------------------------------------|
+| `v0.0.1` | Basic scaffolding + connection logic | [v0.0.1](https://github.com/unumotors/mongo-hydra/milestone/1) |
+| `v0.0.2` | Manage replication                   | [v0.0.2](https://github.com/unumotors/mongo-hydra/milestone/2) |
+| `v0.0.3` | Sharding                             | [v0.0.3](https://github.com/unumotors/mongo-hydra/milestone/3) |
+| `v0.0.4` | User and roles                       | [v0.0.4](https://github.com/unumotors/mongo-hydra/milestone/4) |
+| `v0.0.5` | Authentication                       | [v0.0.5](https://github.com/unumotors/mongo-hydra/milestone/5) |
+| `v0.0.6` | K8s Operator + CRDs                  | [v0.0.6](https://github.com/unumotors/mongo-hydra/milestone/6) |
+
+## Comparison
+
+Similar tools like [KubeDB](https://kubedb.com/docs/0.9.0/concepts/databases/mongodb/) and [Percona Kubernetes Operator](https://www.percona.com/doc/kubernetes-operator-for-psmongodb/index.html) exist. This lists their current feature set.
+
+|                 |                       | KubeDB                | Percona                     |
+|-----------------|-----------------------|-----------------------|-----------------------------|
+| Interface       | CLI                   | 🟠 k8s resources      | ⛔                           |
+|                 | k8s operator          | ✅                     | ✅                           |
+| MongoDB support | Replica sets          | ✅                     | ✅                           |
+|                 | Delayed members       | ⛔                     | ⛔                           |
+|                 | Arbiter members       | ⛔                     | ✅                           |
+|                 | Sharded cluster       | ⛔                     | ⛔                           |
+|                 | User management       | ⛔                     | ⛔                           |
+|                 | Admin user setup      | ✅ k8s secrets         | ✅ k8s secrets               |
+|                 | Mongo version support | 🟠 3.6                | ✅ 4.2                       |
+| Security        | Certificates          | ⛔                     | ✅                           |
+|                 | Keyfiles              | ✅                     | ⛔                           |
+|                 | Encryption at rest    | ⛔                     | ✅                           |
+| k8s features    | Automatic backups     | ✅ Snapshots (Buckets) | ✅ Percona Backups (Buckets) |
+|                 | Monitoring            | ✅ Prometheus          | ✅ Percona Monitoring        |
+|                 | Custom persistance    | ✅                     | ✅                           |
+| Various         | Documentation         | ✅                     | 🟠 Limited                  |
 
 ## Warning
 
