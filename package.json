@@ -4,7 +4,8 @@
   "description": "A open source mongo orchestration tool with high hopes",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"no tests yet\"",
+    "test-dev": "nyc ava ./test/*.test.js ./test/**/*.test.js --timeout=30s --verbose --serial",
+    "test": "nyc ava ./test/*.test.js ./test/**/*.test.js --timeout=30s --serial",
     "lint": "echo \"no linter yet\""
   },
   "repository": {
@@ -28,5 +29,12 @@
   "bugs": {
     "url": "https://github.com/unumotors/mongo-hydra/issues"
   },
-  "homepage": "https://github.com/unumotors/mongo-hydra#readme"
+  "homepage": "https://github.com/unumotors/mongo-hydra#readme",
+  "devDependencies": {
+    "ava": "^3.9.0",
+    "nyc": "^15.1.0"
+  },
+  "dependencies": {
+    "mongodb": "^3.5.9"
+  }
 }
