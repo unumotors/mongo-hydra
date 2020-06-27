@@ -52,6 +52,14 @@ Similar tools like [KubeDB](https://kubedb.com/docs/0.9.0/concepts/databases/mon
 
 Right now this project is pre alpha and **not recommended for production systems.**
 
+## Tests
+
+This project is supported by unit and integration level tests.
+
+To run the unit-tests you need to provide a mongod instance without auth at localhost and run `npm run test-dev`.
+
+To run integration tests you need to run `MONGO_VERSION=4.0 docker-compose -f test-integration/docker-compose.yaml up` and `npm run test-integration`.
+
 ## Community & Contributions
 
 Although we will gladly welcome contributions in the near future we would like to first get our first minimal release as we need to aim to maintain feature parity with our internal tool, before opening it up to external contributions.
