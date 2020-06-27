@@ -4,8 +4,8 @@
   "description": "A open source mongo orchestration tool with high hopes",
   "main": "index.js",
   "scripts": {
-    "test-dev": "nyc ava ./test/*.test.js ./test/**/*.test.js --timeout=30s --verbose --serial",
-    "test": "nyc ava ./test/*.test.js ./test/**/*.test.js --timeout=30s --serial",
+    "test-dev": "nyc ava ./test/*.test.js ./test/**/*.test.js ./test/**/**/*.test.js --timeout=30s --verbose --serial",
+    "test": "nyc ava ./test/*.test.js ./test/**/*.test.js ./test/**/**/*.test.js --timeout=30s --serial",
     "lint": "eslint .",
     "lint-fix": "eslint --fix ."
   },
