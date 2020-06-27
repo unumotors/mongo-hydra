@@ -29,24 +29,29 @@ Mongo-hydra is an attempt to open source all that learning in a proper reuseable
 
 Similar tools like [KubeDB](https://kubedb.com/docs/0.9.0/concepts/databases/mongodb/) and [Percona Kubernetes Operator](https://www.percona.com/doc/kubernetes-operator-for-psmongodb/index.html) exist. This lists their current feature set.
 
-|                 |                       | KubeDB                | Percona                     |
-|-----------------|-----------------------|-----------------------|-----------------------------|
-| Interface       | CLI                   | 🟠 k8s resources      | ⛔                           |
-|                 | k8s operator          | ✅                     | ✅                           |
-| MongoDB support | Replica sets          | ✅                     | ✅                           |
-|                 | Delayed members       | ⛔                     | ⛔                           |
-|                 | Arbiter members       | ⛔                     | ✅                           |
-|                 | Sharded cluster       | ⛔                     | ⛔                           |
-|                 | User management       | ⛔                     | ⛔                           |
-|                 | Admin user setup      | ✅ k8s secrets         | ✅ k8s secrets               |
-|                 | Mongo version support | 🟠 3.6                | ✅ 4.2                       |
-| Security        | Certificates          | ⛔                     | ✅                           |
-|                 | Keyfiles              | ✅                     | ⛔                           |
-|                 | Encryption at rest    | ⛔                     | ✅                           |
-| k8s features    | Automatic backups     | ✅ Snapshots (Buckets) | ✅ Percona Backups (Buckets) |
-|                 | Monitoring            | ✅ Prometheus          | ✅ Percona Monitoring        |
-|                 | Custom persistance    | ✅                     | ✅                           |
-| Various         | Documentation         | ✅                     | 🟠 Limited                  |
+|                 |                       | Hydra     |KubeDB         | Percona    |
+|-----------------|-----------------------|-----------|--------------|------------|
+| Interface       | CLI                   | ✅        | ⛔           | ⛔         |
+|                 | Raw Machines          | ✅        | ⛔           | ⛔         |
+|                 | Docker Standalone     | ✅        | ⛔           | ⛔         |
+|                 | k8s operator          | ⛔        | ✅           | ✅         |
+| MongoDB support | Replica sets          | ⛔        | ✅           | ✅         |
+|                 | Delayed members       | ⛔        | ⛔           | ⛔         |
+|                 | Arbiter members       | ⛔        | ⛔           | ✅         |
+|                 | Sharded cluster       | ⛔        | ⛔           | ⛔         |
+|                 | User management       | ⛔        | ⛔           | ⛔         |
+|                 | Admin user setup      | ⛔        | ✅ (k8s)     | ✅(k8s)    |
+|                 | Mongo version support | ✅ =<4.4  | 🟠 3.6       | ✅ 4.2     |
+| Security        | Certificates          | ⛔        | ⛔           | ✅         |
+|                 | Keyfiles              | ⛔        | ✅           | ⛔         |
+|                 | Encryption at rest    | ⛔        | ⛔           | ✅         |
+| Backups         | Automatic backups     | ⛔        | ✅           | ✅         |
+|                 | s3                    | ⛔        | ✅           | ✅         |
+|                 | gcs                   | ⛔        | ✅           | ⛔         |
+|                 | tarsnap               | ⛔        | ⛔           | ⛔         |
+| Monitoring      | Prometheus            | ⛔        | ✅           | ⛔         |
+|                 | Custom                | ⛔        | ⛔           | ✅         |
+| Various         | Documentation         | 🟠 Limited| ✅           | 🟠 Limited |
 
 ## Warning
 
