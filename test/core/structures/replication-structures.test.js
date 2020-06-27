@@ -1,16 +1,20 @@
 const test = require('ava')
 const { ReplicationConfiguration } = require('../../../lib/core/structures/replication-structures')
+const { MongoServerState } = require('../../../lib/core/state/mongo-server')
 
 test('replication configuration structure works as expected for non config servers', (t) => {
   const replicaSetName = 'replica-set-0'
-  const hostnames = ['mongod-0:0', 'mongod-1:1', 'mongod-2:2']
+
+  const servers = [
+    new MongoServerState('mongod-0:0', {}),
+    new MongoServerState('mongod-1:1', {}),
+    new MongoServerState('mongod-2:2', {})
+  ]
 
   const configuration = new ReplicationConfiguration({
-    replicaSetName, hostnames
+    replicaSetName,
+    servers
   })
-
-  t.is(configuration.hostnames, hostnames)
-  t.is(configuration.replicaSetName, replicaSetName)
 
   const mongoConfig = configuration.toMongoConfiguration()
   t.deepEqual(mongoConfig, {
@@ -25,11 +29,18 @@ test('replication configuration structure works as expected for non config serve
 })
 
 test('replication configuration structure works as expected for config servers', (t) => {
-  const replicaSetName = 'replica-set-0'
-  const hostnames = ['mongod-0:0', 'mongod-1:1', 'mongod-2:2']
+  const replicaSetName = 'replica-set-1'
+
+  const servers = [
+    new MongoServerState('mongod-0:0', {}),
+    new MongoServerState('mongod-1:1', {}),
+    new MongoServerState('mongod-2:2', {})
+  ]
 
   const configuration = new ReplicationConfiguration({
-    replicaSetName, hostnames, configServer: true
+    replicaSetName,
+    servers,
+    configServer: true
   })
 
   const mongoConfig = configuration.toMongoConfiguration()

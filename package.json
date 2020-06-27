@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "mongodb": "^3.5.9",
+    "promise-retry": "^2.0.1",
     "yargs": "^15.3.1"
   }
 }

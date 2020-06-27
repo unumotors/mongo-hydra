@@ -25,3 +25,9 @@ test('parses replica members', (t) => {
     t.deepEqual(argv.r, ['mongo-0:27017', 'mongo-1:27017', 'mongo-1:27017'])
   })
 })
+
+test('handler works', (t) => {
+  t.notThrows(() => {
+    replicationCmd.handler()
+  })
+})
