@@ -1,7 +1,7 @@
 const test = require('ava')
-const MongoClientStub = require('../lib/core/clients/stub-client')
-const DiagnosticCommands = require('../lib/core/commands/basic-commands')
-const MongoClient = require('../lib/core/clients/mongodb-client')
+const MongoClientStub = require('../../lib/core/clients/stub-client')
+const DiagnosticCommands = require('../../lib/core/commands/basic-commands')
+const MongoClient = require('../../lib/core/clients/mongodb-client')
 
 const MONGO_TEST_URI = process.env.MONGO_TEST_URI || 'mongodb://localhost:27017'
 
