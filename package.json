@@ -6,7 +6,8 @@
   "scripts": {
     "test-dev": "nyc ava ./test/*.test.js ./test/**/*.test.js --timeout=30s --verbose --serial",
     "test": "nyc ava ./test/*.test.js ./test/**/*.test.js --timeout=30s --serial",
-    "lint": "echo \"no linter yet\""
+    "lint": "eslint .",
+    "lint-fix": "eslint --fix ."
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,9 @@
   "homepage": "https://github.com/unumotors/mongo-hydra#readme",
   "devDependencies": {
     "ava": "^3.9.0",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
     "nyc": "^15.1.0"
   },
   "dependencies": {
