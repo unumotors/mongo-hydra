@@ -37,6 +37,7 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x, 12.x, 14.x]
+        mongo-version: [3.6, 4.0, 4.2]
 
     steps:
     - uses: actions/checkout@v2
@@ -45,6 +46,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Start docker-compose
-      run: docker-compose -f test-integration/docker-compose.4.0.yaml up -d
+      run: docker-compose -f test-integration/docker-compose.yaml up -d
+      env:
+        MONGO_VERSION: ${{ matrix.mongo-version }}
     - run: npm ci
     - run: npm run test-integration
+

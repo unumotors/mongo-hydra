@@ -2,7 +2,7 @@ const test = require('ava')
 const MongoClientStub = require('../../../lib/core/clients/stub-client')
 const ReplicationCommands = require('../../../lib/core/commands/replication-commands')
 
-test('stub: replication command "status" works as expected', async (t) => {
+test('replication command "status" works as expected', async (t) => {
   const replies = [
     { ok: 1 }
   ]
@@ -17,7 +17,7 @@ test('stub: replication command "status" works as expected', async (t) => {
   t.deepEqual(response, replies[0])
 })
 
-test('stub: replication command "getConfig" works as expected', async (t) => {
+test('replication command "getConfig" works as expected', async (t) => {
   const replies = [
     { config: { test: 1 } }
   ]
@@ -32,7 +32,7 @@ test('stub: replication command "getConfig" works as expected', async (t) => {
   t.deepEqual(response, { test: 1 })
 })
 
-test('stub: replication command "initiate" works as expected', async (t) => {
+test('replication command "initiate" works as expected', async (t) => {
   const replies = [
     { ok: 1 }
   ]
@@ -48,7 +48,7 @@ test('stub: replication command "initiate" works as expected', async (t) => {
   t.deepEqual(response, replies[0])
 })
 
-test('stub: replication command "reconfig" works as expected', async (t) => {
+test('replication command "reconfig" works as expected', async (t) => {
   const replies = [
     { ok: 1 }
   ]
