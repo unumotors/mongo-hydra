@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   replication-test-0:
-    image: mongo:4.0
+    image: "mongo:${MONGO_VERSION}"
     command:
     - '--replSet'
     - 'replication-test'
@@ -10,7 +10,7 @@ services:
     ports:
     - "27000:27000"
   replication-test-1:
-    image: mongo:4.0
+    image: "mongo:${MONGO_VERSION}"
     command:
     - '--replSet'
     - 'replication-test'
@@ -19,7 +19,7 @@ services:
     ports:
     - "27001:27001"
   replication-test-2:
-    image: mongo:4.0
+    image: "mongo:${MONGO_VERSION}"
     command:
     - '--replSet'
     - 'replication-test'
