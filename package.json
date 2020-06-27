@@ -15,7 +15,8 @@
     "url": "git+https://github.com/unumotors/mongo-hydra.git"
   },
   "bin": {
-    "mongo-hydra": "./cli.js"
+    "mongo-hydra": "./cli.js",
+    "hydra": "./cli.js"
   },
   "keywords": [
     "mongo",
@@ -40,6 +41,7 @@
     "nyc": "^15.1.0"
   },
   "dependencies": {
-    "mongodb": "^3.5.9"
+    "mongodb": "^3.5.9",
+    "yargs": "^15.3.1"
   }
 }
