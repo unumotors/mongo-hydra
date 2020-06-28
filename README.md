@@ -35,12 +35,12 @@ docker pull unumotors/mongo-hydra
 
 | Version  | Component / Feature                  | Github Milestone                                               |
 |----------|--------------------------------------|----------------------------------------------------------------|
-| `v0.0.1` | Basic scaffolding + connection logic | [v0.0.1](https://github.com/unumotors/mongo-hydra/milestone/1) |
-| `v0.0.2` | Manage replication                   | [v0.0.2](https://github.com/unumotors/mongo-hydra/milestone/2) |
-| `v0.0.3` | Sharding                             | [v0.0.3](https://github.com/unumotors/mongo-hydra/milestone/3) |
-| `v0.0.4` | User and roles                       | [v0.0.4](https://github.com/unumotors/mongo-hydra/milestone/4) |
-| `v0.0.5` | Authentication                       | [v0.0.5](https://github.com/unumotors/mongo-hydra/milestone/5) |
-| `v0.0.6` | K8s Operator + CRDs                  | [v0.0.6](https://github.com/unumotors/mongo-hydra/milestone/6) |
+| `v0.1.0` | Basic scaffolding + connection logic | [v0.0.1](https://github.com/unumotors/mongo-hydra/milestone/1) |
+| `v0.2.0` | Manage replication                   | [v0.2.0](https://github.com/unumotors/mongo-hydra/milestone/2) |
+| `v0.3.0` | Sharding                             | [v0.3.0](https://github.com/unumotors/mongo-hydra/milestone/3) |
+| `v0.4.0` | User and roles                       | [v0.4.0](https://github.com/unumotors/mongo-hydra/milestone/4) |
+| `v0.5.0` | Authentication                       | [v0.5.0](https://github.com/unumotors/mongo-hydra/milestone/5) |
+| `v0.6.0` | K8s Operator + CRDs                  | [v0.6.0](https://github.com/unumotors/mongo-hydra/milestone/6) |
 
 ## Comparison
 
