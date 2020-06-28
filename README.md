@@ -14,6 +14,23 @@ At unu we run large mongo clusters. We use homegrown tools to manage these clust
 
 Mongo-hydra is an attempt to open source all that learning in a proper reuseable maintainable tool that we will use internally too.
 
+## Installation
+
+### CLI
+
+```sh
+$ npm install -g mongo-hydra
++ mongo-hydra@latest
+
+hydra replication -f examples/replication/hydra.yaml
+```
+
+### Docker Image
+
+```sh
+docker pull unumotors/mongo-hydra
+```
+
 ## Release Schedule
 
 | Version  | Component / Feature                  | Github Milestone                                               |
@@ -35,13 +52,13 @@ Similar tools like [KubeDB](https://kubedb.com/docs/0.9.0/concepts/databases/mon
 |                 | Raw Machines          | ✅        | ⛔           | ⛔         |
 |                 | Docker Standalone     | ✅        | ⛔           | ⛔         |
 |                 | k8s operator          | ⛔        | ✅           | ✅         |
-| MongoDB support | Replica sets          | ⛔        | ✅           | ✅         |
+| MongoDB support | Replica sets          | ✅        | ✅           | ✅         |
 |                 | Delayed members       | ⛔        | ⛔           | ⛔         |
 |                 | Arbiter members       | ⛔        | ⛔           | ✅         |
 |                 | Sharded cluster       | ⛔        | ⛔           | ⛔         |
 |                 | User management       | ⛔        | ⛔           | ⛔         |
 |                 | Admin user setup      | ⛔        | ✅ (k8s)     | ✅(k8s)    |
-|                 | Mongo version support | ✅ =<4.4  | 🟠 3.6       | ✅ 4.2     |
+|                 | Mongo version support | ✅ =<4.2  | 🟠 3.6       | ✅ 4.2     |
 | Security        | Certificates          | ⛔        | ⛔           | ✅         |
 |                 | Keyfiles              | ⛔        | ✅           | ⛔         |
 |                 | Encryption at rest    | ⛔        | ⛔           | ✅         |

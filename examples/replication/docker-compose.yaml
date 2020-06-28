@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  mongo-rs-0:
+    image: "mongo:${MONGO_VERSION:-4.2}"
+    command:
+    - '--replSet'
+    - 'mongo-rs'
+    - '--port'
+    - '27000'
+    ports:
+    - "27000:27000"
+  mongo-rs-1:
+    image: "mongo:${MONGO_VERSION:-4.2}"
+    command:
+    - '--replSet'
+    - 'mongo-rs'
+    - '--port'
+    - '27001'
+    ports:
+    - "27001:27001"
+  mongo-rs-2:
+    image: "mongo:${MONGO_VERSION:-4.2}"
+    command:
+    - '--replSet'
+    - 'mongo-rs'
+    - '--port'
+    - '27002'
+    ports:
+    - "27002:27002"
