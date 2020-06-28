@@ -6,7 +6,7 @@ test('mongo server creates MongoClient instance by default', (t) => {
   const host = 'mongo-server:1'
   const server = new MongoServerState({ host })
   t.true(server.client instanceof MongoClient)
-  t.is(server.client.uri, 'mongod://mongo-server:1')
+  t.is(server.client.uri, 'mongodb://mongo-server:1')
 })
 
 test('mongo server can overwrite client uri', (t) => {
