@@ -8,6 +8,7 @@ module.exports = {
     semi: ['error', 'never'],
     'comma-dangle': ['error', 'never'],
     'no-await-in-loop': 'off',
-    'no-restricted-syntax': 'off'
+    'no-restricted-syntax': 'off',
+    'max-len': ['error', { code: 160 }]
   }
 }
