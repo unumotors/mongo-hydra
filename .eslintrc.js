@@ -6,6 +6,8 @@ module.exports = {
     'require-await': 'error',
     'no-return-await': 'off',
     semi: ['error', 'never'],
-    'comma-dangle': ['error', 'never']
+    'comma-dangle': ['error', 'never'],
+    'no-await-in-loop': 'off',
+    'no-restricted-syntax': 'off'
   }
 }
