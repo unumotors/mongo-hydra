@@ -1,6 +1,6 @@
 # mongo-hydra
 
-[![codecov](https://codecov.io/gh/unumotors/mongo-hydra/branch/master/graph/badge.svg)](https://codecov.io/gh/unumotors/mongo-hydra)
+[![codecov](https://codecov.io/gh/unumotors/mongo-hydra/branch/master/graph/badge.svg)](https://codecov.io/gh/unumotors/mongo-hydra) [![build](https://github.com/unumotors/mongo-hydra/workflows/Node.js%20CI/badge.svg)](https://github.com/unumotors/mongo-hydra/actions)
 
 A open source mongo orchestration tool with high hopes.
 
