@@ -123,6 +123,23 @@ test.serial('ReplicaSetState apply throws if it cannot detect the replica state 
   t.is(state.replicaSetStatus, REPLICA_SET_STATUS.UNKNOWN)
 })
 
+test.serial('ReplicaSetState disconnect() does call disconnect on all servers', async (t) => {
+  const client1 = new MongoClientStub([''])
+  const server1 = { host: 'replication-test-0:27000', client: client1 }
+
+  const client2 = new MongoClientStub([''])
+  const server2 = { host: 'replication-test-1:27000', client: client2 }
+
+  const servers = [server1, server2]
+
+  const state = new ReplicaSetState({ replicaSetName, servers })
+
+  await state.disconnect()
+
+  t.is(client1.getLastCommand(), 'disconnect()')
+  t.is(client2.getLastCommand(), 'disconnect()')
+})
+
 test('replication configuration structure works as expected for non config servers', (t) => {
   const servers = [
     { host: 'mongod-0:0' },

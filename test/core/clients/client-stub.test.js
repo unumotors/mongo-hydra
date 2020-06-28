@@ -14,11 +14,19 @@ test('stub clients helps out when forgetting a reply', async (t) => {
 })
 
 test('stub clients has all required functions', async (t) => {
-  const replies = []
+  const replies = ['', '', '']
   const client = new MongoClientStub(replies)
-  await client.connect() // does nothing
+
+  await t.notThrowsAsync(async () => {
+    await client.connect()
+  })
 
   await t.notThrowsAsync(async () => {
     await client.useDatabase()
   })
+
+  await t.notThrowsAsync(async () => {
+    await client.disconnect()
+  })
+  t.is(client.getLastCommand(), 'disconnect()')
 })

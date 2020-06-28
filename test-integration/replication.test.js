@@ -33,16 +33,19 @@ test.serial('ReplicaSetState can pick up uninitialized state', async (t) => {
   const state = new ReplicaSetState({ replicaSetName, servers })
   await state.refreshState()
   t.is(state.replicaSetStatus, REPLICA_SET_STATUS.UNINITIALIZED)
+  await state.disconnect()
 })
 
 test.serial('ReplicaSetState can initialize replica set', async (t) => {
   const state = new ReplicaSetState({ replicaSetName, servers })
   await state.apply()
   t.is(state.replicaSetStatus, REPLICA_SET_STATUS.HEALTHY)
+  await state.disconnect()
 })
 
 test.serial('ReplicaSetState can detect a healthy replica set', async (t) => {
   const state = new ReplicaSetState({ replicaSetName, servers })
   await state.refreshState()
   t.is(state.replicaSetStatus, REPLICA_SET_STATUS.HEALTHY)
+  await state.disconnect()
 })
