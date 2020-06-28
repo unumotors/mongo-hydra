@@ -1,0 +1,15 @@
+# Define a replica set
+# to support multiple replica sets use multiple config files
+replicaSet:
+  # Replica set name
+  replicaSetName: mongo-rs
+  # The servers that should be part of this replica set
+  # host: The host mongo internally uses to name and connect to these
+  # uri: the  URI that  hydra uses  to connect and configure (can be a mapping/port-forwarding/public URI)
+  servers:
+  - host: mongo-rs-0:27000
+    uri: mongodb://localhost:27000
+  - host: mongo-rs-1:27001
+    uri: mongodb://localhost:27001
+  - host: mongo-rs-2:27002
+    uri: mongodb://localhost:27002
