@@ -6,6 +6,7 @@
   "scripts": {
     "test": "nyc ava ./test/*.test.js ./test/**/*.test.js ./test/**/**/*.test.js --timeout=30s --verbose --serial",
     "test-integration": "ava ./test-integration/*.test.js --timeout=30s --serial",
+    "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov",
     "lint": "eslint .",
     "lint-fix": "eslint --fix ."
   },
