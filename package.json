@@ -1,6 +1,6 @@
 {
   "name": "mongo-hydra",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A open source mongo orchestration tool with high hopes",
   "main": "index.js",
   "scripts": {
