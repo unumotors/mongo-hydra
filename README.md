@@ -12,7 +12,7 @@ Automate the creation, modification, or deletion of everything required to run a
 
 **Developer Experience** Infra as code, simple to get started, easy to scale down for local development and experimentation.
 
-At unu we run large mongo clusters. We use homegrown tools to manage these clusters. These tools were originally built in bash and have become hard to maintain.
+At [unu][unugmbh] we run large mongo clusters. We use homegrown tools to manage these clusters. These tools were originally built in bash and have become hard to maintain.
 
 Mongo-hydra is an attempt to open source all that learning in a proper reuseable maintainable tool that we will use internally too.
 
@@ -33,6 +33,12 @@ hydra replication -f examples/replication/hydra.yaml
 docker pull unumotors/mongo-hydra
 ```
 
+### Examples
+
+A full set of examples is available in [/examples](/examples) directory.
+
+* [Basic Replication](/examples/replication)
+
 ## Release Schedule
 
 | Version  | Component / Feature                  | Github Milestone                                               |
@@ -46,9 +52,9 @@ docker pull unumotors/mongo-hydra
 
 ## Comparison
 
-Similar tools like [KubeDB](https://kubedb.com/docs/0.9.0/concepts/databases/mongodb/) and [Percona Kubernetes Operator](https://www.percona.com/doc/kubernetes-operator-for-psmongodb/index.html) exist. This lists their current feature set.
+Similar tools like [KubeDB][kubedb] and [Percona Kubernetes Operator][percona] exist. This lists their current feature set.
 
-|                 |                       | Hydra     |KubeDB         | Percona    |
+|                 |                       | [Hydra][hydra] |[KubeDB][kubedb]         | [Percona][percona]    |
 |-----------------|-----------------------|-----------|--------------|------------|
 | Interface       | CLI                   | ✅        | ⛔           | ⛔         |
 |                 | Raw Machines          | ✅        | ⛔           | ⛔         |
@@ -62,6 +68,7 @@ Similar tools like [KubeDB](https://kubedb.com/docs/0.9.0/concepts/databases/mon
 |                 | Admin user setup      | ⛔        | ✅ (k8s)     | ✅(k8s)    |
 |                 | Mongo version support | ✅ =<4.4| 🟠 3.6       | ✅ 4.2     |
 | Security        | Certificates          | ⛔        | ⛔           | ✅         |
+|                 | [Vault][vault] support| ⛔        | ⛔           | ⛔         |
 |                 | Keyfiles              | ⛔        | ✅           | ⛔         |
 |                 | Encryption at rest    | ⛔        | ⛔           | ✅         |
 | Backups         | Automatic backups     | ⛔        | ✅           | ✅         |
@@ -97,3 +104,8 @@ Although we will gladly welcome contributions in the near future we would like t
 Copyright 2020 unu GmbH
 
 Licensed under [MIT](LICENSE)
+
+[unugmbh]: https://unumotors.com/en
+[hydra]: https://github.com/unumotors/mongo-hydra
+[kubedb]: https://kubedb.com/docs/0.12.0/concepts/databases/mongodb/
+[percona]: https://www.percona.com/doc/kubernetes-operator-for-psmongodb/index.html
