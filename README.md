@@ -66,7 +66,7 @@ Similar tools like [KubeDB][kubedb] and [Percona Kubernetes Operator][percona] e
 |                 | Sharded cluster       | ⛔        | ⛔           | ⛔         |
 |                 | User management       | ⛔        | ⛔           | ⛔         |
 |                 | Admin user setup      | ⛔        | ✅ (k8s)     | ✅(k8s)    |
-|                 | Mongo version support | ✅ =<4.2  | 🟠 3.6       | ✅ 4.2     |
+|                 | Mongo version support | ✅ =<4.4| 🟠 3.6       | ✅ 4.2     |
 | Security        | Certificates          | ⛔        | ⛔           | ✅         |
 |                 | [Vault][vault] support| ⛔        | ⛔           | ⛔         |
 |                 | Keyfiles              | ⛔        | ✅           | ⛔         |
