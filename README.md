@@ -60,7 +60,7 @@ Similar tools like [KubeDB](https://kubedb.com/docs/0.9.0/concepts/databases/mon
 |                 | Sharded cluster       | ⛔        | ⛔           | ⛔         |
 |                 | User management       | ⛔        | ⛔           | ⛔         |
 |                 | Admin user setup      | ⛔        | ✅ (k8s)     | ✅(k8s)    |
-|                 | Mongo version support | ✅ =<4.2  | 🟠 3.6       | ✅ 4.2     |
+|                 | Mongo version support | ✅ =<4.4| 🟠 3.6       | ✅ 4.2     |
 | Security        | Certificates          | ⛔        | ⛔           | ✅         |
 |                 | Keyfiles              | ⛔        | ✅           | ⛔         |
 |                 | Encryption at rest    | ⛔        | ⛔           | ✅         |
