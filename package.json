@@ -18,6 +18,11 @@
     "mongo-hydra": "./cli.js",
     "hydra": "./cli.js"
   },
+  "files": [
+    "/lib",
+    "cli.js",
+    "index.js"
+  ],
   "keywords": [
     "mongo",
     "mongodb",
