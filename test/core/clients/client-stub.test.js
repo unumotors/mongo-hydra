@@ -1,6 +1,6 @@
 const test = require('ava')
 const MongoClientStub = require('../../../lib/core/clients/stub-client')
-const DiagnosticCommands = require('../../../lib/core/commands/basic-commands')
+const DiagnosticCommands = require('../../../lib/core/commands/diagnostic-commands')
 
 test('stub clients helps out when forgetting a reply', async (t) => {
   const replies = []

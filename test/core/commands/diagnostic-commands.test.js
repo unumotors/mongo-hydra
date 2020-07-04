@@ -1,6 +1,6 @@
 const test = require('ava')
 const MongoClientStub = require('../../../lib/core/clients/stub-client')
-const DiagnosticCommands = require('../../../lib/core/commands/basic-commands')
+const DiagnosticCommands = require('../../../lib/core/commands/diagnostic-commands')
 
 test('diagnostic command "ping" works as expected', async (t) => {
   const replies = [

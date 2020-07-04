@@ -3,6 +3,7 @@ const yargs = require('yargs')
 const fs = require('fs')
 const yaml = require('js-yaml')
 const replication = require('./lib/cli/replication')
+const users = require('./lib/cli/users')
 
 // This seems required to parse
 async function main() {
@@ -15,6 +16,7 @@ async function main() {
       return yaml.safeLoad(fs.readFileSync(file, 'utf8'))
     })
     .command(replication)
+    .command(users)
     .demandCommand()
     .help()
     // Disable wrapping

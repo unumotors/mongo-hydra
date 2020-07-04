@@ -1,0 +1,11 @@
+connection:
+  uri: mongodb://localhost:27017/admin
+users:
+- user: 'david'
+  password: 'pass123'
+  customData:
+    foo: bar
+- user: 'immanuel'
+  password: 'pass123'
+  customData:
+    foo: bar

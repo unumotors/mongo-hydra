@@ -2,7 +2,7 @@ version: '3.8'
 services:
   ### mongod instances for diagnostic-commands.test.js
   diagnostic-commands:
-    image: "mongo:${MONGO_VERSION}"
+    image: "mongo:${MONGO_VERSION:-4.2}"
     command:
     - '--replSet'
     - 'replication-test'
@@ -10,9 +10,17 @@ services:
     - '27017'
     ports:
     - "27017:27017"
+  ### mongod instances for user-commands.test.js
+  user-commands:
+    image: "mongo:${MONGO_VERSION:-4.2}"
+    command:
+    - '--port'
+    - '29017'
+    ports:
+    - "29017:29017"
   ### mongod instances for replication.test.js
   replication-test-0:
-    image: "mongo:${MONGO_VERSION}"
+    image: "mongo:${MONGO_VERSION:-4.2}"
     command:
     - '--replSet'
     - 'replication-test'
@@ -21,7 +29,7 @@ services:
     ports:
     - "27000:27000"
   replication-test-1:
-    image: "mongo:${MONGO_VERSION}"
+    image: "mongo:${MONGO_VERSION:-4.2}"
     command:
     - '--replSet'
     - 'replication-test'
@@ -30,7 +38,7 @@ services:
     ports:
     - "27001:27001"
   replication-test-2:
-    image: "mongo:${MONGO_VERSION}"
+    image: "mongo:${MONGO_VERSION:-4.2}"
     command:
     - '--replSet'
     - 'replication-test'
