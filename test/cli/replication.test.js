@@ -1,6 +1,7 @@
 const test = require('ava')
 const yargs = require('yargs')
 const proxyquire = require('proxyquire')
+const Joi = require('@hapi/joi')
 const { REPLICA_SET_STATUS } = require('../../lib/core/state/replication')
 
 let foo = {}
@@ -75,8 +76,7 @@ test.serial('Calls replication with correct params', async (t) => {
   const argv = {
     replicaSet: {
       replicaSetName: 'asdf',
-      servers: [
-      ]
+      servers: [{ host: 'host:1' }]
     }
   }
 
@@ -97,12 +97,26 @@ test.serial('Fails when replica isn\'t healthy', async (t) => {
   const argv = {
     replicaSet: {
       replicaSetName: 'asdf',
-      servers: [
-      ]
+      servers: [{ host: 'host:1' }]
     }
   }
 
   await t.throwsAsync(async () => {
     await replicationCmd.handler(argv)
   }, { message: 'ReplicaSet not healthy. Has state 94' })
+})
+
+test.serial('Fails when validation fails', async (t) => {
+  t.plan(1)
+
+  const argv = {
+    replicaSet: {
+      replicaSetName: 'asdf',
+      servers: [] // This should contain a host
+    }
+  }
+
+  await t.throwsAsync(async () => {
+    await replicationCmd.handler(argv)
+  }, { instanceOf: Joi.ValidationError })
 })

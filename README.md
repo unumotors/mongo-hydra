@@ -44,40 +44,42 @@ A full set of examples is available in [/examples](/examples) directory.
 | Version  | Component / Feature                  | Github Milestone                                               |
 |----------|--------------------------------------|----------------------------------------------------------------|
 | `v0.1.0` | Basic scaffolding + connection logic | [v0.0.1](https://github.com/unumotors/mongo-hydra/milestone/1) |
-| `v0.2.0` | Manage replication                   | [v0.2.0](https://github.com/unumotors/mongo-hydra/milestone/2) |
-| `v0.3.0` | Sharding                             | [v0.3.0](https://github.com/unumotors/mongo-hydra/milestone/3) |
-| `v0.4.0` | User and roles                       | [v0.4.0](https://github.com/unumotors/mongo-hydra/milestone/4) |
-| `v0.5.0` | Authentication                       | [v0.5.0](https://github.com/unumotors/mongo-hydra/milestone/5) |
-| `v0.6.0` | K8s Operator + CRDs                  | [v0.6.0](https://github.com/unumotors/mongo-hydra/milestone/6) |
+| `v0.2.0` | Minimal replication                  | [v0.2.0](https://github.com/unumotors/mongo-hydra/milestone/2) |
+| `v0.3.0` | User and roles                       | [v0.3.0](https://github.com/unumotors/mongo-hydra/milestone/3) |
+| `v0.4.0` | Authentication                       | [v0.4.0](https://github.com/unumotors/mongo-hydra/milestone/4) |
+| `v0.5.0` | Minimal Sharding                     | [v0.5.0](https://github.com/unumotors/mongo-hydra/milestone/5) |
+| `v0.6.0` | Internal Cluster Authentication      | [v0.6.0](https://github.com/unumotors/mongo-hydra/milestone/6) |
+| `v0.7.0` | User/Replication modification        | [v0.7.0](https://github.com/unumotors/mongo-hydra/milestone/7) |
+| `v0.8.0` | K8s Operator and CRDs                | [v0.8.0](https://github.com/unumotors/mongo-hydra/milestone/8) |
 
 ## Comparison
 
 Similar tools like [KubeDB][kubedb] and [Percona Kubernetes Operator][percona] exist. This lists their current feature set.
 
-|                 |                       | [Hydra][hydra] |[KubeDB][kubedb]         | [Percona][percona]    |
-|-----------------|-----------------------|-----------|--------------|------------|
-| Interface       | CLI                   | ✅        | ⛔           | ⛔         |
-|                 | Raw Machines          | ✅        | ⛔           | ⛔         |
-|                 | Docker Standalone     | ✅        | ⛔           | ⛔         |
-|                 | k8s operator          | ⛔        | ✅           | ✅         |
-| MongoDB support | Replica sets          | ✅        | ✅           | ✅         |
-|                 | Delayed members       | ⛔        | ⛔           | ⛔         |
-|                 | Arbiter members       | ⛔        | ⛔           | ✅         |
-|                 | Sharded cluster       | ⛔        | ⛔           | ⛔         |
-|                 | User management       | ⛔        | ⛔           | ⛔         |
-|                 | Admin user setup      | ⛔        | ✅ (k8s)     | ✅(k8s)    |
-|                 | Mongo version support | ✅ =<4.4| 🟠 3.6       | ✅ 4.2     |
-| Security        | Certificates          | ⛔        | ⛔           | ✅         |
-|                 | [Vault][vault] support| ⛔        | ⛔           | ⛔         |
-|                 | Keyfiles              | ⛔        | ✅           | ⛔         |
-|                 | Encryption at rest    | ⛔        | ⛔           | ✅         |
-| Backups         | Automatic backups     | ⛔        | ✅           | ✅         |
-|                 | s3                    | ⛔        | ✅           | ✅         |
-|                 | gcs                   | ⛔        | ✅           | ⛔         |
-|                 | tarsnap               | ⛔        | ⛔           | ⛔         |
-| Monitoring      | Prometheus            | ⛔        | ✅           | ⛔         |
-|                 | Custom                | ⛔        | ⛔           | ✅         |
-| Various         | Documentation         | 🟠 Limited| ✅           | 🟠 Limited |
+|                 |                        | [Hydra][hydra] | [KubeDB][kubedb] | [Percona][percona] |
+|-----------------|------------------------|----------------|------------------|--------------------|
+| Interface       | CLI                    | ✅              | ⛔                | ⛔                  |
+|                 | Raw Machines           | ✅              | ⛔                | ⛔                  |
+|                 | Docker Standalone      | ✅              | ⛔                | ⛔                  |
+|                 | k8s operator           | ⛔              | ✅                | ✅                  |
+| MongoDB support | Replica sets           | ✅              | ✅                | ✅                  |
+|                 | Delayed members        | ⛔              | ⛔                | ⛔                  |
+|                 | Arbiter members        | ⛔              | ⛔                | ✅                  |
+|                 | Sharded cluster        | ⛔              | ⛔                | ⛔                  |
+|                 | User management        | ⛔              | ⛔                | ⛔                  |
+|                 | Admin user setup       | ⛔              | ✅ (k8s)          | ✅(k8s)             |
+|                 | Mongo version support  | ✅ =<4.4        | 🟠 3.6           | ✅ 4.2              |
+| Security        | Certificates           | ⛔              | ⛔                | ✅                  |
+|                 | [Vault][vault] support | ⛔              | ⛔                | ⛔                  |
+|                 | Keyfiles               | ⛔              | ✅                | ⛔                  |
+|                 | Encryption at rest     | ⛔              | ⛔                | ✅                  |
+| Backups         | Automatic backups      | ⛔              | ✅                | ✅                  |
+|                 | s3                     | ⛔              | ✅                | ✅                  |
+|                 | gcs                    | ⛔              | ✅                | ⛔                  |
+|                 | tarsnap                | ⛔              | ⛔                | ⛔                  |
+| Monitoring      | Prometheus             | ⛔              | ✅                | ⛔                  |
+|                 | Custom                 | ⛔              | ⛔                | ✅                  |
+| Various         | Documentation          | 🟠 Limited     | ✅                | 🟠 Limited         |
 
 ## Warning
 
