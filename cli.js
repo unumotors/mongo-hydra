@@ -19,9 +19,18 @@ async function main() {
     .command(users)
     .demandCommand()
     .help()
+    .fail((msg, err, args) => {
+      console.error(msg)
+      console.error('')
+      console.error(args.help())
+      console.error('')
+      if (err) throw err // preserve stack
+      process.exit(1)
+    })
     // Disable wrapping
     .wrap(null)
     .epilog('Hail Hydra\ncopyright 2020 unu GmbH')
+    .argv
 }
 
 try {
