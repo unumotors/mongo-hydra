@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  mongo:
+    image: "mongo:${MONGO_VERSION:-4.2}"
+    command:
+    - '--port'
+    - '27017'
+    ports:
+    - "27017:27017"
