@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  mongo:
+    image: "mongo:${MONGO_VERSION:-4.2}"
+    command:
+    - '--port'
+    - '27017'
+    - '--auth'
+    - '--bind_ip_all'
+    - '--tlsMode'
+    - 'requireTLS'
+    - '--tlsCertificateKeyFile'
+    - '/certs/server/mongodb.pem'
+    - '--tlsCAFile'
+    - '/certs/ca/ca.crt'
+    # This allows clients to not present a certificate
+    # Ideally this should not be enabled, but we need proper cert infra
+    # To do this right
+    #- '--sslAllowConnectionsWithoutCertificates'
+    #- '--sslAllowInvalidCertificates'
+    volumes:
+    # maps current certs into running container for use
+    - ./certs:/certs
+    ports:
+    - "27017:27017"
+
