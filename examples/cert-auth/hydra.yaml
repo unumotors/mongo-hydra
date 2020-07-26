@@ -1,33 +1,22 @@
 connection:
-  # not needed
-  # uri: mongodb://localhost:27017/admin
+  uri: mongodb://localhost:27017/admin
   # https://mongodb.github.io/node-mongodb-native/3.6/api/MongoClient.html#.connect
-  tls:
-    insecure: true
-    caFile: ./certs/ca.crt
-    certificateKeyFile: ./certs/cert.pem
+  options:
+    authMechanism: 'MONGODB-X509'
+    tls: true
+    tlsInsecure: true
+    tlsCAFile: ./certs/ca/ca.crt
+    tlsCertificateKeyFile: ./certs/client/client.pem
     #certificateKeyFilePassword:
-    allowInvalidCertificates: true
-    allowInvalidHostnames: true
+    tlsAllowInvalidCertificates: true
+    tlsAllowInvalidHostnames: true
 
-
-
-
-# Define a replica set
-# to support multiple replica sets use multiple config files
-replicaSet:
-  # Replica set name
-  replicaSetName: mongo-rs
-  # The servers that should be part of this replica set
-  # host: The host mongo internally uses to name and connect to these
-  # uri: the  URI that  hydra uses  to connect and configure (can be a mapping/port-forwarding/public URI)
-  servers:
-  - host: mongo-rs-0:27000
-    uri: mongodb://localhost:27000
-  - host: mongo-rs-1:27001
-    uri: mongodb://localhost:27001
-  - host: mongo-rs-2:27002
-    uri: mongodb://localhost:27002
-  sslPEMKeyFile: process.env.HYDRA_SSL_KEY_FILE || `/certs/mongodb.pem`,
-  sslPEMCertificateFile: process.env.HYDRA_SSL_CERTIFICATE_FILE || `/certs/mongodb.crt`,
-  sslCaFile: process.env.HYDRA_SSL_CA_FILE || `/certs/ca.pem`
+users:
+- user: 'david'
+  password: 'pass123'
+  customData:
+    foo: bar
+- user: 'immanuel'
+  password: 'pass123'
+  customData:
+    foo: bar

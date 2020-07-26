@@ -13,6 +13,10 @@ services:
     - '/certs/server/mongodb.pem'
     - '--tlsCAFile'
     - '/certs/ca/ca.crt'
+    # Allows x509 certs to auth as cluster members
+    - --clusterAuthMode
+    - x509
+
     # This allows clients to not present a certificate
     # Ideally this should not be enabled, but we need proper cert infra
     # To do this right
