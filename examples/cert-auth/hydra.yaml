@@ -1,15 +1,22 @@
 connection:
   uri: mongodb://localhost:27017/admin
-  # https://mongodb.github.io/node-mongodb-native/3.6/api/MongoClient.html#.connect
   options:
     authMechanism: 'MONGODB-X509'
     tls: true
-    tlsInsecure: true
     tlsCAFile: ./certs/ca/ca.crt
-    tlsCertificateKeyFile: ./certs/client/client.pem
+    tlsCertificateKeyFile: ./certs/server/mongodb.pem
+
+    # Connect using client cert
+    # requires manual steps in readme
+    #tlsCAFile: ./certs/ca/ca.crt
+    #tlsCertificateKeyFile: ./certs/client/client.pem
+    # authSource: '$external',
+    # Disable security settings
+    # Use at own risk
+    #tlsInsecure: true
     #certificateKeyFilePassword:
-    tlsAllowInvalidCertificates: true
-    tlsAllowInvalidHostnames: true
+    #tlsAllowInvalidCertificates: false
+    #tlsAllowInvalidHostnames: true
 
 users:
 - user: 'david'
@@ -18,5 +25,9 @@ users:
     foo: bar
 - user: 'immanuel'
   password: 'pass123'
+  customData:
+    foo: bar
+- user: 'CN=localhost,OU=Clients,O=hydra'
+  external: true
   customData:
     foo: bar
