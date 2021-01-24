@@ -1,0 +1,33 @@
+connection:
+  uri: mongodb://localhost:27017/admin
+  options:
+    authMechanism: 'MONGODB-X509'
+    tls: true
+    tlsCAFile: ./certs/ca/ca.crt
+    tlsCertificateKeyFile: ./certs/server/mongodb.pem
+
+    # Connect using client cert
+    # requires manual steps in readme
+    #tlsCAFile: ./certs/ca/ca.crt
+    #tlsCertificateKeyFile: ./certs/client/client.pem
+    # authSource: '$external',
+    # Disable security settings
+    # Use at own risk
+    #tlsInsecure: true
+    #certificateKeyFilePassword:
+    #tlsAllowInvalidCertificates: false
+    #tlsAllowInvalidHostnames: true
+
+users:
+- user: 'david'
+  password: 'pass123'
+  customData:
+    foo: bar
+- user: 'immanuel'
+  password: 'pass123'
+  customData:
+    foo: bar
+- user: 'CN=localhost,OU=Clients,O=hydra'
+  external: true
+  customData:
+    foo: bar
